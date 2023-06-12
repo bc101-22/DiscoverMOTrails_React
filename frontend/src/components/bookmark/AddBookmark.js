@@ -5,12 +5,12 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useUserContext } from '../../context/userContext';
 
-function AddBookmark(props) {
+function Addbookmark(props) {
     const [open, setOpen] = useState(false);
-    const {user} = useUserContext();
-    const [bookmark, setBookmark] = useState({
-        user: '',
-        trail: ''
+    const { user } = useUserContext();
+    const [bookmarkDTO, setBookmarkDTO] = useState({
+        uid: user.id,
+        tid: props.tid
     });
 
     const handleClickOpen = () => {
@@ -22,29 +22,27 @@ function AddBookmark(props) {
     };
 
     const handleChange = (event) => {
-        setBookmark({
-            ...bookmark,
+        setBookmarkDTO({
+            ...bookmarkDTO,
             [event.target.name]: event.target.value
         });
     }
 
     const handleSave = () => {
-        props.addBookmark(bookmark);
+        props.addBookmark(bookmarkDTO);
         handleClose();
     }
 
     return (
         <div>
-            <button onClick={handleClickOpen}>New Bookmark</button>
+            <button onClick={handleClickOpen}>Add Bookmark</button>
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>New Bookmark</DialogTitle>
+                <DialogTitle>Add Bookmark</DialogTitle>
                 <DialogContent>
-                    <input placeholder="User" name="user" 
-                        value={user.id} type="hidden"/> 
-                        {/* TODO - retrieve user from context */}
-                    <input placeholder="Trail" name="trail"
-                        value={bookmark.trail} onChange={handleChange}
-                    /><br/>
+                    <input placeholder="User" name="uid"
+                        value={bookmarkDTO.uid} type="hidden" />
+                    <input placeholder="Trail" name="tid"
+                        value={bookmarkDTO.tid} type="hidden" /><br />
                 </DialogContent>
                 <DialogActions>
                     <button onClick={handleClose}>Cancel</button>
@@ -55,4 +53,4 @@ function AddBookmark(props) {
     )
 }
 
-export default AddBookmark;
+export default Addbookmark;

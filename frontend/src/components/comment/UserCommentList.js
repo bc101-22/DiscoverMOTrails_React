@@ -1,26 +1,32 @@
-import React, { useEffect, useState, createContext, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { DataGrid, GridToolbarContainer, GridToolbarExport, gridClasses } from '@mui/x-data-grid';
+import Link  from '@mui/material/Link';
 import { SERVER_URL } from '../../constants.js'
-import AddBookmark from './AddBookmark.js';
+import { userContext, useUserContext, UserContextProvider } from '../../context/userContext.js';
+import AddComment from './AddComment.js';
+import EditComment from './EditComment.js';
 
-import { userContext, useUserContext, UserContextProvider } from '../../context/userContext';
-import axios from "../../api/axios";
-import { Cookies } from 'react-cookie';
-
-function BookmarkList() {
-    const [bookmarks, setBookmarks] = useState([]);
+function UserCommentList() {
+    const [comments, setComments] = useState([]);
     const [open, setOpen] = useState(false);
 
     const {user} = useUserContext();
 
     useEffect(() => {
-        fetchBookmarks();
+        fetchComments();
     }, []);
 
     const columns = [
-        // { field: 'id', headerName: 'Id', width: 200 }, // uncomment to show more info for debugging
-        // { field: 'user', headerName: 'User', width: 200, valueFormatter: ({ value }) => value.displayName }, // uncomment to show more info for debugging
         { field: 'trail', headerName: 'Trail', width: 200,  valueFormatter: ({ value }) => value.title},
+        { field: 'message', headerName: 'Message', width: 200},
+        {
+            field: 'edit',
+            headerName: '',
+            sortable: false,
+            filterable: false,
+            renderCell: row =>
+                <EditComment data={row} updateComment={updateComment} />
+        },
         {
             field: '_links.self.href',
             headerName: '',
@@ -30,22 +36,23 @@ function BookmarkList() {
                 <button
                     onClick={() => onDelClick(row.id)}>Delete
                 </button>
-        },
+        },  
     ];
 
-    const fetchBookmarks = () => {
-        fetch(SERVER_URL + 'api/mybookmarks?uid=' + user.id)
-        .then(response => response.json())
-            .then(data => setBookmarks(data))
+
+    const fetchComments = () => {
+        fetch(SERVER_URL + 'api/mycomments?uid=' + user.id)
+            .then(response => response.json())
+            .then(data => setComments(data))
             .catch(err => console.error(err));
     }
 
     const onDelClick = (url) => {
-        if (window.confirm("Please confirm you want to delete the bookmark.")) {
+        if (window.confirm("Please confirm you want to delete the comment.")) {
             fetch(url, { method: 'DELETE' })
                 .then(response => {
                     if (response.ok) {
-                        fetchBookmarks();
+                        fetchComments();
                         setOpen(true);
                     }
                     else {
@@ -56,16 +63,16 @@ function BookmarkList() {
         }
     }
 
-    const addBookmark = (bookmark) => {
-        fetch(SERVER_URL + 'api/bookmarks',
+    const addComment = (comment) => {
+        fetch(SERVER_URL + 'api/comments',
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(bookmark)
+                body: JSON.stringify(comment)
             })
             .then(response => {
                 if (response.ok) {
-                    fetchBookmarks();
+                    fetchComments();
                 }
                 else {
                     alert('There is an error processing the create request.');
@@ -74,18 +81,18 @@ function BookmarkList() {
             .catch(err => console.error(err))
     }
 
-    const updateBookmark = (bookmark, link) => {
+    const updateComment = (comment, link) => {
         fetch(link,
             { 
               method: 'PUT', 
               headers: {
               'Content-Type':  'application/json',
             },
-            body: JSON.stringify(bookmark)
+            body: JSON.stringify(comment)
           })
             .then(response => {
                 if (response.ok) {
-                    fetchBookmarks();
+                    fetchComments();
                 }
                 else {
                     alert('There is an error processing the update request.');
@@ -93,19 +100,16 @@ function BookmarkList() {
             })
             .catch(err => console.error(err))
     }
-    
 
     return (
         <React.Fragment>
-            <AddBookmark addBookmark={addBookmark} />
             <div style={{ height: 500, width: '100%' }}>
                 <DataGrid
-                    rows={bookmarks}
+                    rows={comments}
                     columns={columns}
-                     //TODO - assign a uniqe row id
-                    getRowId={row => SERVER_URL + 'api/bookmark?bid=' + row.id} />
+                    getRowId={row => SERVER_URL + 'api/comment?cid=' + row.id} />
             </div>
         </React.Fragment>
     );
 }
-export default BookmarkList;
+export default UserCommentList;

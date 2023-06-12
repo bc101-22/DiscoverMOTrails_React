@@ -81,6 +81,7 @@ public class User extends AbstractEntity implements UserDetails {
         this.authorities = authorities;
     }
 
+//    @JsonIgnore
     public boolean isAccountLoggedIn() { return true; }
 
     @Override

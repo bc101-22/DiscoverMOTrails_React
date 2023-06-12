@@ -11,11 +11,13 @@ import Logout from './components/logout/logout';
 import Protected from './utils/protected';
 
 import TrailList from "./components/trail/TrailList.js";
-import Trail from "./components/trail/Trail.js";
-import BookmarkList from "./components/bookmark/BookmarkList"
-import NoteList from "./components/note/NoteList.js";
+import Trail from "./components/trail/TrailDetails.js";
+import UserBookmarkList from "./components/bookmark/UserBookmarkList"
+import UserNoteList from "./components/note/UserNoteList.js";
+import UserCommentList from './components/comment/UserCommentList';
 
 import { UserContextProvider } from './context/userContext';
+
 
 /* TODO: Set authentication context for secured APIs that calls Login function if no token is accessable 
    TODO: Set check for Auth token */
@@ -44,10 +46,11 @@ function App() {
             <Route path="/logout" exact element={<Logout />} />
 
             <Route path="/trails" exact element={<TrailList />} />
-            <Route path="/traildetails/:id" exact element={<Trail />} />
+            <Route path="/traildetails/:tid" exact element={<Trail />} />
             
-            <Route path="/mybookmarks" exact element={<BookmarkList />} />
-            <Route path="/mynotes" exact element={<NoteList />} />
+            <Route path="/mybookmarks" exact element={<UserBookmarkList />} />
+            <Route path="/mynotes" exact element={<UserNoteList />} />
+            <Route path="/mycomments" exact element={<UserCommentList />} />
           </Routes>
         </div>
       </Router>

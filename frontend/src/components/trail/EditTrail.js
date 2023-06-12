@@ -14,7 +14,7 @@ function EditTrail(props) {
 
     const handleClickOpen = () => {
         setTrail({
-            id: props.data.row.id, // set trail id to the original id, without providing a field to modify it in the return form
+            id: props.data.row.id,
             title: props.data.row.title,
             description: props.data.row.description
         })

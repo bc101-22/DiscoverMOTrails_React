@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @SpringBootApplication
 public class SecuritybackendApplication
-		implements CommandLineRunner {
+		implements CommandLineRunner { //TODO - for testing only, delete before pushing
 
 	public static void main(String[] args) {
 		SpringApplication.run(SecuritybackendApplication.class, args);
@@ -34,7 +34,8 @@ public class SecuritybackendApplication
 	@Autowired
 	private BookmarkRepository bookmarkRepository;
 
-//	Generate testing data
+//	TODO - for local development only, delete before pushing
+//	Generating testing data
 	@Override
 	public void run(String... args) throws Exception {
 
@@ -56,8 +57,8 @@ public class SecuritybackendApplication
 //		Note note1 = new Note(user1, trail1, "note1");
 //		Note note2 = new Note(user2, trail1, "user 2 note");
 //
-//		Comment cm1 = new Comment(user1, trail1, "first comment");
-//		Comment cm2 = new Comment(user1, trail2, "white sand");
+//		Comment cm1 = new Comment(user2, trail1, "first comment");
+//		Comment cm2 = new Comment(user2, trail2, "white sand");
 //
 //		trailRepository.saveAll(Arrays.asList(trail1, trail2, trail3)); //already in the db
 //

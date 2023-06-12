@@ -5,10 +5,10 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useUserContext } from '../../context/userContext';
 
-function Addnote(props) {
+function AddComment(props) {
     const [open, setOpen] = useState(false);
     const { user } = useUserContext();
-    const [noteDTO, setNoteDTO] = useState({
+    const [commentDTO, setCommentDTO] = useState({
         uid: user.id,
         tid: props.tid,
         message: ''
@@ -23,31 +23,31 @@ function Addnote(props) {
     };
 
     const handleChange = (event) => {
-        setNoteDTO({
-            ...noteDTO,
+        setCommentDTO({
+            ...commentDTO,
             [event.target.name]: event.target.value
         });
     }
 
     const handleSave = () => {
-        props.addNote(noteDTO);
+        props.addComment(commentDTO);
         handleClose();
     }
 
     return (
         <div>
-            <button onClick={handleClickOpen}>New Note</button>
+            <button onClick={handleClickOpen}>New Comment</button>
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>New Note</DialogTitle>
+                <DialogTitle>New Comment</DialogTitle>
                 <DialogContent>
                     <input placeholder="User" name="uid"
-                        value={noteDTO.uid} onChange={handleChange} type="hidden"
+                        value={commentDTO.uid} onChange={handleChange} type="hidden"
                     /><br />
                     <input placeholder="Trail" name="tid"
-                        value={noteDTO.tid} onChange={handleChange} type="hidden"
+                        value={commentDTO.tid} onChange={handleChange} type="hidden"
                     /><br />
                     <input placeholder="Message" name="message"
-                        value={noteDTO.message} onChange={handleChange}
+                        value={commentDTO.message} onChange={handleChange}
                     /><br />
                 </DialogContent>
                 <DialogActions>
@@ -59,4 +59,4 @@ function Addnote(props) {
     )
 }
 
-export default Addnote;
+export default AddComment;

@@ -1,36 +1,24 @@
 import React, { useEffect, useState, createContext, useContext } from 'react';
 import { DataGrid, GridToolbarContainer, GridToolbarExport, gridClasses } from '@mui/x-data-grid';
 import { SERVER_URL } from '../../constants.js'
-import AddNote from './AddNote.js';
-import EditNote from './EditNote.js';
+import AddBookmark from './AddBookmark.js';
 
-import { userContext, useUserContext, UserContextProvider } from '../../context/userContext';
-import axios from "../../api/axios";
+import { userContext, useUserContext, UserContextProvider } from '../../context/userContext.js';
+import axios from "../../api/axios.js";
 import { Cookies } from 'react-cookie';
 
-function NoteList() {
-    const [notes, setNotes] = useState([]);
+function UserBookmarkList() {
+    const [bookmarks, setBookmarks] = useState([]);
     const [open, setOpen] = useState(false);
 
     const {user} = useUserContext();
 
     useEffect(() => {
-        fetchnotes();
+        fetchBookmarks();
     }, []);
 
     const columns = [
-        // { field: 'id', headerName: 'Id', width: 200 }, // uncomment to show more info for debugging
-        // { field: 'user', headerName: 'User', width: 200, valueFormatter: ({ value }) => value.displayName }, // uncomment to show more info for debugging
         { field: 'trail', headerName: 'Trail', width: 200,  valueFormatter: ({ value }) => value.title},
-        { field: 'message', headerName: 'Message', width: 200},
-        {
-            field: 'edit',
-            headerName: '',
-            sortable: false,
-            filterable: false,
-            renderCell: row =>
-                <EditNote data={row} updateNote={updateNote} />
-        },
         {
             field: '_links.self.href',
             headerName: '',
@@ -43,19 +31,19 @@ function NoteList() {
         },
     ];
 
-    const fetchnotes = () => {
-        fetch(SERVER_URL + 'api/mynotes?uid=' + user.id)
+    const fetchBookmarks = () => {
+        fetch(SERVER_URL + 'api/mybookmarks?uid=' + user.id) // only fetch bookmarks belong to the user associated with the current context
         .then(response => response.json())
-            .then(data => setNotes(data))
+            .then(data => setBookmarks(data))
             .catch(err => console.error(err));
     }
 
     const onDelClick = (url) => {
-        if (window.confirm("Please confirm you want to delete the note.")) {
+        if (window.confirm("Please confirm you want to delete the bookmark.")) {
             fetch(url, { method: 'DELETE' })
                 .then(response => {
                     if (response.ok) {
-                        fetchnotes();
+                        fetchBookmarks();
                         setOpen(true);
                     }
                     else {
@@ -66,16 +54,16 @@ function NoteList() {
         }
     }
 
-    const addNote = (note) => {
-        fetch(SERVER_URL + 'api/notes',
+    const addBookmark = (bookmark) => {
+        fetch(SERVER_URL + 'api/mybookmarks',
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(note)
+                body: JSON.stringify(bookmark)
             })
             .then(response => {
                 if (response.ok) {
-                    fetchnotes();
+                    fetchBookmarks();
                 }
                 else {
                     alert('There is an error processing the create request.');
@@ -84,18 +72,18 @@ function NoteList() {
             .catch(err => console.error(err))
     }
 
-    const updateNote = (note, link) => {
+    const updateBookmark = (bookmark, link) => {
         fetch(link,
             { 
               method: 'PUT', 
               headers: {
               'Content-Type':  'application/json',
             },
-            body: JSON.stringify(note)
+            body: JSON.stringify(bookmark)
           })
             .then(response => {
                 if (response.ok) {
-                    fetchnotes();
+                    fetchBookmarks();
                 }
                 else {
                     alert('There is an error processing the update request.');
@@ -107,14 +95,13 @@ function NoteList() {
 
     return (
         <React.Fragment>
-            {/* <AddNote addNote={addNote} /> */}
             <div style={{ height: 500, width: '100%' }}>
                 <DataGrid
-                    rows={notes}
+                    rows={bookmarks}
                     columns={columns}
-                    getRowId={row => SERVER_URL + 'api/note?nid=' + row.id} />
+                    getRowId={row => SERVER_URL + 'api/bookmark?bid=' + row.id} />
             </div>
         </React.Fragment>
     );
 }
-export default NoteList;
+export default UserBookmarkList;

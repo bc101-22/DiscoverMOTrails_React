@@ -63,7 +63,7 @@ public class ProjectSecurityConfig {
                         return configuration;
                     }
                 }).and().csrf((csrf) -> csrf.csrfTokenRequestHandler(requestHandler).ignoringRequestMatchers("/register" //)
-                        , "/api/**", "**") //TODO - restore security settings after development
+                        , "/api/**", "**") //TODO - remove this line and fix csrf token after pages work
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
@@ -71,7 +71,8 @@ public class ProjectSecurityConfig {
                 .authorizeHttpRequests()
                     .requestMatchers("/account","/user", "/secure").authenticated()
                     .requestMatchers("/index", "/register" //) .permitAll()
-                            ,"/api/**", "**").permitAll() //TODO - restore security settings after development
+                            ,"/api/**", "**").permitAll() //TODO - fix csrf token after pages work
+//                    .anyRequest().permitAll() // TODO - delete before pushing, for local development only
                 .and().httpBasic();
         return http.build();
     }

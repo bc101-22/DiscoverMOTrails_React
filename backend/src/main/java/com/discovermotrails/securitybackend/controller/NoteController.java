@@ -1,9 +1,10 @@
 package com.discovermotrails.securitybackend.controller;
 
-import com.discovermotrails.securitybackend.model.Bookmark;
-import com.discovermotrails.securitybackend.model.Note;
-import com.discovermotrails.securitybackend.model.Trail;
+import com.discovermotrails.securitybackend.model.*;
+import com.discovermotrails.securitybackend.model.dto.NoteFormDTO;
 import com.discovermotrails.securitybackend.repository.NoteRepository;
+import com.discovermotrails.securitybackend.repository.TrailRepository;
+import com.discovermotrails.securitybackend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +15,12 @@ import java.util.Optional;
 public class NoteController {
     @Autowired
     NoteRepository noteRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private TrailRepository trailRepository;
 
     // for testing only, not used in the actual app
     @GetMapping("/allnotes")
@@ -35,14 +42,38 @@ public class NoteController {
         return note.get();
     }
 
+    @GetMapping("/trailnote")
+    public Iterable<Note> getNoteByUserAndTrailId(@RequestParam int uid, @RequestParam int tid) {
+        return noteRepository.findByUserAndTrailId(uid, tid);
+    }
+
     @PostMapping("/mynotes")
-    public Note addNote(@RequestBody Note note){
+    public Note addNote(@RequestBody NoteFormDTO nfDTO){
+
+        System.out.println("-------------------------------");
+        System.out.println("uid: " + nfDTO.getUid());
+        System.out.println("tid: " + nfDTO.getTid());
+        System.out.println("msg: " + nfDTO.getMessage());
+        System.out.println("-------------------------------");
+
+        Optional<User> userOpt = userRepository.findById(nfDTO.getUid());
+        User user;
+        if(userOpt.isEmpty()) return null;
+        else user = userOpt.get();
+
+        Trail trail;
+        Optional<Trail> trailOpt = trailRepository.findById(nfDTO.getTid());
+        if(trailOpt.isEmpty()) return null;
+        else trail = trailOpt.get();
+
+        Note note = new Note(user, trail, nfDTO.getMessage());
+
         noteRepository.save(note); //TODO - add error checking
         return note;
     }
 
     @PutMapping("/note")
-    public Note editTrail(@RequestParam int nid, @RequestBody Note note) {
+    public Note editNoteTrail(@RequestParam int nid, @RequestBody Note note) {
         noteRepository.save(note); //TODO - add error checking
         return note;
     }

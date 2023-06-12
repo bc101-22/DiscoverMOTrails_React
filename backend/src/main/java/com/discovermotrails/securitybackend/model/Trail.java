@@ -52,5 +52,4 @@ public class Trail extends AbstractEntity {
     public void setTitle(String title) {
         this.title = title;
     }
-
 }

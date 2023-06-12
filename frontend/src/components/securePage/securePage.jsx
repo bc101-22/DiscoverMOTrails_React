@@ -46,18 +46,17 @@ function SecurePage() {
           <p>User Email: {user.email}</p>
         </div>
 
-        {/* <div>
+        <div>
             <nav>
                 <ul>
-                    <li><Link to="/trails">Trails</Link></li>
+                    <li><Link to="/trails">Browse Trails</Link></li>
+                    <li><Link to="/mynotes">My Notes</Link></li>
+                    <li><Link to="/mycomments">My Comments</Link></li>
+                    <li><Link to="/mybookmarks">My Bookmarks</Link></li>
                 </ul>
             </nav>
-            <Routes>
-                <Route path="/secure" exact element={<TrailList />} />
-                    <Route path="/trails" exact element={<TrailList />} />
-            </Routes>
             
-        </div> */}
+        </div>
         </>
     );
 }

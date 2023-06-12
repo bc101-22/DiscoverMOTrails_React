@@ -3,51 +3,50 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import { useUserContext } from '../../context/userContext';
 
-function Addnote(props) {
+function EditComment(props) {
     const [open, setOpen] = useState(false);
-    const { user } = useUserContext();
-    const [noteDTO, setNoteDTO] = useState({
-        uid: user.id,
-        tid: props.tid,
+    const [comment, setComment] = useState({
+        id: '',
+        trail: '',
         message: ''
     });
 
     const handleClickOpen = () => {
+        setComment({
+            id: props.data.row.id,
+            user: props.data.row.user,
+            trail: props.data.row.trail,
+            message: props.data.row.message
+        })
         setOpen(true);
-    };
+
+    }
 
     const handleClose = () => {
         setOpen(false);
-    };
+    }
 
     const handleChange = (event) => {
-        setNoteDTO({
-            ...noteDTO,
+        setComment({
+            ...comment,
             [event.target.name]: event.target.value
         });
     }
 
     const handleSave = () => {
-        props.addNote(noteDTO);
+        props.updateComment(comment, "http://localhost:8080/api/comment?cid=" + comment.id);
         handleClose();
     }
 
     return (
         <div>
-            <button onClick={handleClickOpen}>New Note</button>
+            <button onClick={handleClickOpen}>Edit</button>
             <Dialog open={open} onClose={handleClose}>
-                <DialogTitle>New Note</DialogTitle>
+                <DialogTitle>Edit Comment</DialogTitle>
                 <DialogContent>
-                    <input placeholder="User" name="uid"
-                        value={noteDTO.uid} onChange={handleChange} type="hidden"
-                    /><br />
-                    <input placeholder="Trail" name="tid"
-                        value={noteDTO.tid} onChange={handleChange} type="hidden"
-                    /><br />
                     <input placeholder="Message" name="message"
-                        value={noteDTO.message} onChange={handleChange}
+                        value={comment.message} onChange={handleChange}
                     /><br />
                 </DialogContent>
                 <DialogActions>
@@ -56,7 +55,6 @@ function Addnote(props) {
                 </DialogActions>
             </Dialog>
         </div>
-    )
+    );
 }
-
-export default Addnote;
+export default EditComment;
